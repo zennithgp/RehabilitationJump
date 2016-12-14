@@ -59,6 +59,7 @@ public class PlayerPhysicsMoveScript : MonoBehaviour {
 
 	void ResetPlayerPosition(){
 		transform.position = startPos;
+		playerBody.velocity = startPos;
 	}
 
 }
