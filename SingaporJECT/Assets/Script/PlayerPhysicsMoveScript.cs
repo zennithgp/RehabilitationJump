@@ -48,6 +48,10 @@ public class PlayerPhysicsMoveScript : MonoBehaviour {
 			ResetPlayerPosition (false);
 		}
 
+		if (transform.position.y < -170) {
+			ResetPlayerPosition (false);
+		}
+
 		CheatCodes ();
 	}
 
