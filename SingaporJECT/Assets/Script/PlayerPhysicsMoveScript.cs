@@ -44,7 +44,7 @@ public class PlayerPhysicsMoveScript : MonoBehaviour {
 		MoveByKey (moveIn, new Vector3 (0, 0, timeAdjustedSpeed));
 		MoveByKey (moveOut, new Vector3 (0, 0, -timeAdjustedSpeed));
 
-		if (Input.GetKey (reset)) {
+		if (Input.GetKeyDown (reset)) {
 			ResetPlayerPosition (false);
 		}
 
