@@ -14,6 +14,8 @@ public class PlayerPhysicsMoveScript : MonoBehaviour {
 	public KeyCode right;
 	public KeyCode moveIn;
 	public KeyCode moveOut;
+	public KeyCode reset;
+	public Vector3 startPos;
 
 	// Use this for initialization
 	void Start () {
@@ -37,6 +39,10 @@ public class PlayerPhysicsMoveScript : MonoBehaviour {
 		MoveByKey (right, new Vector3 (timeAdjustedSpeed, 0, 0));
 		MoveByKey (moveIn, new Vector3 (0, 0, timeAdjustedSpeed));
 		MoveByKey (moveOut, new Vector3 (0, 0, -timeAdjustedSpeed));
+
+		if (Input.GetKey (reset)) {
+			ResetPlayerPosition ();
+		}
 	}
 
 
@@ -49,6 +55,10 @@ public class PlayerPhysicsMoveScript : MonoBehaviour {
 //			playerBody.MovePosition (tempPosition);
 			playerBody.AddForce(movement); //we move in the direction we programmed it to move! Huzzah!
 		}
+	}
+
+	void ResetPlayerPosition(){
+		transform.position = startPos;
 	}
 
 }
