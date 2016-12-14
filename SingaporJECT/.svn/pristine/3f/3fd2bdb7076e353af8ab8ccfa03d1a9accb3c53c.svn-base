@@ -1,0 +1,164 @@
+﻿using UnityEngine;
+using System.Collections;
+using System.IO; //we need to open streams
+using UnityEngine.UI; //we need to use the UI for text
+
+public class txtLevelCreatorScript : MonoBehaviour {
+
+	//this is the name of the file we'll be getting our data from
+	//this is PUBLIC
+	public string LevelFile;
+	public string HighScoreFile;
+
+	//this offset lets us have the let not start at 0,0,0
+	//this is PUBLIC
+	public Vector3 offset;
+
+	//this is where we'll be storing our save file
+	public const string PATH = "Assets/Resources/";
+
+	//this is a reference to our Block Prefab
+	private const string BLOCK_PATH = "Block";
+	private const string COUNTERCLOCKWISE_SPINNER_PATH = "Spinner";
+	private const string CLOCKWISE_SPINNER_PATH = "ReverseSpinner";
+	private const string END_BLOCK_PATH = "EndLevel";
+
+	//we're going to make a container. It'll keep our Hierarchy from getting cluttered.
+	GameObject levelHolder;
+
+	//this array will contain the data for our level
+	string[] levelStringArray = new string[]{};
+
+	//make a reference to the player
+	public GameObject Player;
+
+	//make a reference to the audio source
+	AudioSource startMusic;
+
+	public Text instructionText;
+
+	//a bool to determine if the game has started
+	public static bool gameStart = true;
+
+	//create a timer for the game
+	float timer = 0;
+	//this is a reference to the best a player has done this game
+	string highScore = "";
+
+
+	//we're calling an Awake function to ensure that there's only one Game Manager
+	void Awake(){
+		DontDestroyOnLoad (gameObject); //don't destroy this game object
+
+		if (gameManager == null) { //if we don't have a game manager already...
+			gameManager = this; //this current gameObject is our game manager
+		} else { //otherwise, we already have a game manager!
+			Destroy (gameObject); //and we don't need this one, so we destroy it
+		}
+
+	}
+
+
+
+	// Use this for initialization
+	void Start () {
+
+		//load the audio
+		startMusic = GetComponent<AudioSource> ();
+
+		//Create the Level Holder wrapper to keep clutter out of the hierarchy
+		levelHolder = new GameObject ("Level Holder");
+
+		//Open a stream to the level file
+		StreamReader sr = new StreamReader (PATH + LevelFile);
+
+		//Read the entire file
+		string fileContents = sr.ReadToEnd();
+
+		//Split the file into an array. We'll use every line break as a split.
+		levelStringArray = fileContents.Split('\n');
+
+		//Now, we'll instantiate a block wherever there is an x.
+		//We do this by reading every line of LevelStringArray, then calling a function which reads those lines for specific characters.
+		for (int i = 0; i < levelStringArray.Length; i++) {
+			//We're feeding the function the string (that line) and a y poisition (later lines are lower down)
+			MakeTheLevel(levelStringArray[i], -i);
+		}
+
+		//We're done, so close our stream.
+		sr.Close();
+
+		//Let's open a stream to the high score file
+		StreamReader sr1 = new StreamReader (PATH + HighScoreFile);
+		fileContents = sr1.ReadToEnd ();
+		highScore = fileContents;
+		sr1.Close ();
+
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		if (Input.GetKey (KeyCode.R)) {
+			Reset ();
+		}
+
+		timer += Time.deltaTime;
+		UpdateText ();
+	}
+
+	//This function will scan a string (from an array) for specific characters
+	//When it finds them, it instantiates prefabs. Neat!
+	void MakeTheLevel(string line, float yPos) {
+		for (int i = 0; i < line.Length; i++) {
+			//save the next character for analysis
+			char c = line [i];
+
+			//if that character is an x...
+			if (c == 'x') {
+				//We make a block! We're casting it as a Game Object so Unity knows what to expect.
+				GameObject block = Instantiate (Resources.Load (BLOCK_PATH) as GameObject);
+				//Now, we set its position according to its position in the array (i) and yPos (the cell in the array)
+				block.transform.position = new Vector3 (i, yPos, 0) + offset;
+				//We make it a child of the LevelHolder so it doesn't clutter our inspector
+				block.transform.parent = levelHolder.transform;
+			}
+
+			if (c == 's') {
+				GameObject spinner = Instantiate (Resources.Load (COUNTERCLOCKWISE_SPINNER_PATH) as GameObject);
+				spinner.transform.position = new Vector3 (i, yPos, 0) + offset;
+				spinner.transform.parent = levelHolder.transform;
+
+			}
+
+			if (c == 'b') {
+				GameObject spinner = Instantiate (Resources.Load (CLOCKWISE_SPINNER_PATH) as GameObject);
+				spinner.transform.position = new Vector3 (i, yPos, 0) + offset;
+				spinner.transform.parent = levelHolder.transform;
+
+			}
+
+			if (c == 'e'){
+				GameObject endLevelBlock = Instantiate (Resources.Load (END_BLOCK_PATH) as GameObject);
+				endLevelBlock.transform.position = new Vector3 (i, yPos, 0) + offset;
+				endLevelBlock.transform.parent = levelHolder.transform;
+			}
+		}
+	}
+
+	void Reset() {
+		Vector3 tempPos = new Vector3 (0, -2, 0);
+		Player.transform.position = tempPos;
+//		startMusic.Stop ();
+		timer = 0;
+
+	}
+
+	void UpdateText(){
+		if (gameStart) {
+			instructionText.text = "Race to the finish!\nTime: " + Mathf.Ceil (timer) + "\nHigh Score: " + highScore;
+		}
+	}
+
+
+		
+}

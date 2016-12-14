@@ -1,0 +1,32 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public class SpeedUpSphereScript : MonoBehaviour {
+
+	public float acceleration = 1000f;
+
+	// Use this for initialization
+	void Start () {
+
+	}
+	
+	// Update is called once per frame
+	void Update () {
+
+	}
+
+	void OnTriggerEnter (Collider player)
+	{
+		player.attachedRigidbody.AddForce(Vector3.down * acceleration * 2, ForceMode.Acceleration);
+		Debug.Log("Entering!");
+	}
+
+	void onTriggerStay(Collider player){
+		player.attachedRigidbody.AddForce(Vector3.down * acceleration, ForceMode.Acceleration);
+		Debug.Log ("STAYNG!");
+	}
+
+	void onTriggerExit(Collider player){
+		Debug.Log ("LEAVING!");
+	}
+}

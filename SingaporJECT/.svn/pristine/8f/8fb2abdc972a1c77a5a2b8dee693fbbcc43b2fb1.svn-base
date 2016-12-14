@@ -1,0 +1,26 @@
+﻿using UnityEngine;
+using System.Collections;
+
+/*Here's what we've learned so far. What shall we do with it?
+ * Constants
+ * StreamWriter/StreamReader
+ * Turning a .txt file into a level
+ * Singletons
+ * Constants
+ * Awake
+ * Properties (Get, Set)
+ * Debugging
+ */
+
+public class MidtermGameManager : MonoBehaviour {
+
+	// Use this for initialization
+	void Start () {
+
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+}

@@ -1,0 +1,87 @@
+﻿using UnityEngine;
+using System.Collections;
+using System.IO;
+using UnityEngine.UI;
+using System.Collections.Generic;
+
+public class Once40EndStoryManager : MonoBehaviour {
+
+
+	/*So, here's what needs be done.
+	 *When the game starts, it reads the text file and puts it into a list.
+	 *You then move to a random line in the list between 2 and 39.
+	 *The UI shows you the previous and following lines.
+	 *When you click the button, it takes the text from the input file, updates that line from the list, and moves you to another line.
+	 *When you click the save button, it saves the list back to the text file.
+	 */
+
+	//references to our UI
+	public InputField inputField;
+	public Text instructionText;
+	public Text previousLine;
+	public Text nextLine;
+	public Button insertTextButton;
+
+	//	private const char delim = '|';
+	private const string FILE_NAME = "Assets/Resources/Once40Story.txt";
+	string playerName;
+
+	int currentLine;
+	string thisineSays;
+
+	string storyFile;
+	public List<string> storyList; //we're using a LIST to contain the entire story. We'll use this to circumvent the streamwriter.
+
+	// Use this for initialization
+	void Start () {
+	
+
+		//Read the story file. If it doesn't exist, make a new one.
+		Debug.Log ("Loading old story.");
+		storyFile = FileIOUtility.ReadStringFromFile (FILE_NAME);
+		//TODO: Make it actually check for a null file
+		if (storyFile == null) {
+			Debug.Log ("No story exists. Making new story.");
+			MakeNewStory ();
+		}
+
+//		storyArray = storyFile.Split (new char{lineDelim});
+//		storyArray = storyFile.Split (new string[] { "\r\n", "\n"\ }, StringSplitOptions.None);
+
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+		if (Input.GetKeyDown (KeyCode.Alpha9)) {
+			MakeNewStory ();
+		}
+
+//		if (Input.GetKeyDown (KeyCode.Alpha5)) {
+//			Debug.Log (storyFile);
+//		}
+
+	}
+
+	void MakeNewStory(){
+		FileIOUtility.WriteStringToFile (FILE_NAME, "1: Once Upon a Time", false);
+		StreamWriter sw1 = new StreamWriter (FILE_NAME, true);
+		for (int i = 2; i < 40; i++) {
+			sw1.WriteLine (i.ToString () + ": (empty)");
+		}
+		sw1.Close ();
+
+//		FileIOUtility.WriteStringToFile (FILE_NAME, i.ToString() + ": test", true);
+		FileIOUtility.WriteStringToFile (FILE_NAME, "40: The End.", true);
+		Debug.Log ("Erased the old story and made a new one.");
+		storyFile = FileIOUtility.ReadStringFromFile (FILE_NAME);
+	}
+
+	void SaveStory(){
+
+	}
+
+	public void AddLineToStory(){
+
+	}
+}

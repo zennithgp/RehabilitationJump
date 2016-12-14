@@ -1,0 +1,55 @@
+﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+public class QueueGunScript : MonoBehaviour {
+
+	GameObject bulletPool;
+	public Vector3 bulletSpeed = new Vector3 (0, 5, 0);
+	public float cooldown = 0.3f;
+	float cooldownTimer = 0;
+
+	public Queue<string> bulletQueue;
+
+	// Use this for initialization
+	void Start () {
+		bulletPool = new GameObject ("Bullet Pool");
+
+		bulletQueue = new Queue<string> ();
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+		if (cooldownTimer > 0) {
+			cooldownTimer = cooldownTimer - Time.deltaTime;
+		}
+
+		Debug.Log ("Cooldown: " + cooldownTimer);
+
+		if (Input.GetKeyDown (KeyCode.I) && (cooldownTimer <= 0) ) {
+			FireSelectedBullet ("Bullet");
+			cooldownTimer = cooldown;
+		}
+		if (Input.GetKeyDown (KeyCode.O) && (cooldownTimer <= 0) ) {
+			FireSelectedBullet ("BlueBullet");
+			cooldownTimer = cooldown;
+		}
+		if (Input.GetKeyDown (KeyCode.P) && (cooldownTimer <= 0) ) {
+			FireSelectedBullet ("RedBullet");
+			cooldownTimer = cooldown;
+		}
+
+
+	}
+
+	public string AddBulletToQueue
+
+	public GameObject FireSelectedBullet(string bulletName){
+		GameObject bullet = Instantiate (Resources.Load (bulletName)) as GameObject;
+		bullet.GetComponent<Rigidbody> ().velocity = bulletSpeed;
+		bullet.transform.position = transform.position;
+		bullet.transform.parent = bulletPool.transform;
+		return bullet;
+	}
+}

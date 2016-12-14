@@ -1,0 +1,209 @@
+﻿using UnityEngine;
+using System.Collections;
+using UnityEngine.UI; //we need this to reference text
+
+/*TODO:
+ * Level Ending
+ * -->Compare the high score
+ * -->Play victory fanfare
+ * -->Destroy current level
+ * -->Load next level
+ * -->If you're at the end, reset
+ */
+
+
+/*Here's what we've learned so far. What shall we do with it?
+ * Constants
+ * StreamWriter/StreamReader
+ * Turning a .txt file into a level
+ * Singletons
+ * Constants
+ * Awake
+ * Properties (Get, Set)
+ * Debugging
+ */
+
+public class MidtermGameManager : MonoBehaviour {
+
+	//name of the files we'll be getting our data from
+	public string levelFile;
+	public string highScoreFile;
+
+	//where we're storing our files
+	public const string PATH = "Assets/Resources/";
+
+	//offset lets us not start at 0,0,0
+	public Vector3 offset;
+
+	//references to our Prefab
+	private const string BLOCK_PATH = "Block";
+	private const string COUNTERCLOCKWISE_SPINNER_PATH = "Spinner";
+	private const string CLOCKWISE_SPINNER_PATH = "ReverseSpinner";
+	private const string END_BLOCK_PATH = "EndLevel";
+	private const string SPEED_UP_PATH = "SpeedUp";
+	private const string SPEED_DOWN_PATH = "SpeedDown";
+
+	//we're going to make a container. It'll keep our Hierarchy from getting cluttered.
+	GameObject levelHolder;
+
+	//array to contain the data for our level
+	string[] levelStringArray = new string[]{};
+
+	//make a reference to the player
+	public GameObject Player;
+
+	public Text instructionText;
+
+	//a bool to determine if the game has started
+	public static bool gameStart = true;
+
+	//a reference to the game manager. We're making it a singleton.
+	public static MidtermGameManager gameManager = null;
+
+	//make a reference to the audio source
+	AudioSource startMusic;
+
+	//create a timer for the game
+	float timer = 0;
+
+	//this is a reference to the best a player has done this game
+	string highScore = "";
+
+
+	//we're calling an Awake function to ensure that there's only one Game Manager
+	void Awake(){
+		DontDestroyOnLoad (gameObject);
+
+		if (gameManager == null) { //if we don't have a game manager already...
+			gameManager = this; //this current gameObject is our game manager
+		} else { //otherwise, we already have a game manager!
+			Destroy (gameObject); //and we don't need this one, so we destroy it
+		}
+	}
+
+
+	// Use this for initialization
+	void Start () {
+
+		//load the audio
+		startMusic = GetComponent<AudioSource> ();
+
+		//Create the Level Holder wrapper to keep clutter out of the hierarchy
+		levelHolder = new GameObject ("Level Holder");
+
+		//READ THE LEVEL USING THE IO UTILITY! THIS IS SO MUCH EASIER.
+		string fileContents = FileIOUtility.ReadStringFromFile(PATH + levelFile);
+		highScore = FileIOUtility.ReadStringFromFile (PATH + highScoreFile);
+
+		//Split the file into an array. We'll use every line break as a split.
+		levelStringArray = fileContents.Split('\n');
+
+		//instantiate a block wherever there is an x.
+		//We do this by reading every line of LevelStringArray, then calling a function which reads those lines for specific characters.
+		for (int i = 0; i < levelStringArray.Length; i++) {
+			//We're feeding the function the string (that line) and a y poisition (later lines are lower down)
+			MakeTheLevel(levelStringArray[i], -i);
+		}
+			
+	}
+		
+	
+	// Update is called once per frame
+	void Update () {
+	
+		timer += Time.deltaTime;
+		UpdateText ();
+
+		if(Input.GetKeyDown(KeyCode.R)){
+			Vector3 tempVec = new Vector3 (0, 0, 0);
+			Player.transform.position = tempVec;
+		}
+
+		if(Input.GetKeyDown(KeyCode.Alpha1)){
+			DestroyTheLevel();
+		}
+						
+	}
+
+	void MakeTheLevel(string line, float yPos){
+
+		//this function builds the whole level by reading each line of the text file
+		for (int i = 0; i < line.Length; i++) {
+
+			//remember the current character to compare it to something
+			char c = line [i];
+
+			if (c == 'x') {
+				//We make a block! We're casting it as a Game Object so Unity knows what to expect.
+				GameObject block = Instantiate (Resources.Load (BLOCK_PATH) as GameObject);
+				//Now, we set its position according to its position in the array (i) and yPos (the cell in the array)
+				block.transform.position = new Vector3 (i, yPos, 0) + offset;
+				//We make it a child of the LevelHolder so it doesn't clutter our inspector
+				block.transform.parent = levelHolder.transform;
+			}
+
+			if (c == 's') {
+				GameObject spinner = Instantiate (Resources.Load (COUNTERCLOCKWISE_SPINNER_PATH) as GameObject);
+				spinner.transform.position = new Vector3 (i, yPos, 0) + offset;
+				spinner.transform.parent = levelHolder.transform;
+
+			}
+
+			if (c == 'b') {
+				GameObject spinner = Instantiate (Resources.Load (CLOCKWISE_SPINNER_PATH) as GameObject);
+				spinner.transform.position = new Vector3 (i, yPos, 0) + offset;
+				spinner.transform.parent = levelHolder.transform;
+
+			}
+
+			if (c == 'e'){
+				GameObject endLevelBlock = Instantiate (Resources.Load (END_BLOCK_PATH) as GameObject);
+				endLevelBlock.transform.position = new Vector3 (i, yPos, 0) + offset;
+				endLevelBlock.transform.parent = levelHolder.transform;
+			}
+
+			if (c == 'v') {
+				GameObject speedUpSphere = Instantiate (Resources.Load (SPEED_UP_PATH) as GameObject);
+				speedUpSphere.transform.position = new Vector3 (i, yPos, 0) + offset;
+				speedUpSphere.transform.parent = levelHolder.transform;
+
+			}
+
+			if (c == '^') {
+				GameObject speedDownSphere = Instantiate (Resources.Load (SPEED_DOWN_PATH) as GameObject);
+				speedDownSphere.transform.position = new Vector3 (i, yPos, 0) + offset;
+				speedDownSphere.transform.parent = levelHolder.transform;
+			}
+
+		}
+	}
+
+	void DestroyTheLevel(){
+		foreach (Transform child in levelHolder.transform) {
+			GameObject.Destroy (child.gameObject);
+		}
+	}
+//
+//	void NextLevel(){
+//
+//		string fileContents = FileIOUtility.ReadStringFromFile(PATH + levelFile);
+//
+//		//Split the file into an array. We'll use every line break as a split.
+//		levelStringArray = fileContents.Split('\n');
+//
+//		//instantiate a block wherever there is an x.
+//		//We do this by reading every line of LevelStringArray, then calling a function which reads those lines for specific characters.
+//		for (int i = 0; i < levelStringArray.Length; i++) {
+//			//We're feeding the function the string (that line) and a y poisition (later lines are lower down)
+//			MakeTheLevel(levelStringArray[i], -i);
+//
+//	}
+
+
+	void UpdateText(){
+		if (gameStart) {
+			instructionText.text = "Race to the finish!\nTime: " + Mathf.Ceil (timer) + "\nHigh Score: " + highScore + " seconds";
+		}
+	}
+
+}

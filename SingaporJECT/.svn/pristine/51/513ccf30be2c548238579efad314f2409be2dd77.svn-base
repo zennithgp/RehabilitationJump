@@ -1,0 +1,33 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public class SpeedDownSphereScript : MonoBehaviour {
+
+	public float acceleration = 1f;
+
+	// Use this for initialization
+	void Start () {
+	
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+
+	void OnTriggerEnter (Collider player)
+	{
+		player.attachedRigidbody.AddForce(Vector3.up * acceleration * 2, ForceMode.Acceleration);
+		Debug.Log("Entering slow!");
+	}
+
+	void OnTriggerStay(Collider player){
+		player.attachedRigidbody.AddForce(Vector3.up * acceleration, ForceMode.Acceleration);
+		Debug.Log ("STAYNG slow!");
+	}
+
+	void OnTriggerExit(Collider player){
+		Debug.Log ("LEAVING slow!");
+	}
+
+}

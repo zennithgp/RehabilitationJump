@@ -1,0 +1,36 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public class SpeedUpSphereScript : MonoBehaviour {
+
+	public float acceleration = 100f;
+	AudioSource soundEffect;
+
+	// Use this for initialization
+	void Start () {
+		
+		soundEffect = GetComponent<AudioSource> ();
+
+	}
+	
+	// Update is called once per frame
+	void Update () {
+
+	}	
+
+	void OnTriggerEnter (Collider player)
+	{
+		player.attachedRigidbody.AddForce(Vector3.down * acceleration * 2, ForceMode.Acceleration);
+//		Debug.Log("Entering!");
+		soundEffect.Play ();
+	}
+
+	void OnTriggerStay(Collider player){
+		player.attachedRigidbody.AddForce(Vector3.down * acceleration, ForceMode.Acceleration);
+//		Debug.Log ("STAYNG!");
+	}
+
+//	void OnTriggerExit(Collider player){
+//		Debug.Log ("LEAVING!");
+//	}
+}

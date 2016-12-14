@@ -1,0 +1,30 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public class ZCorrectionScript : MonoBehaviour {
+
+	// Use this for initialization
+	void Start () {
+	
+	}
+	
+	// Update is called once per frame
+	void Update () {
+
+		if (transform.position.z != 0) {
+			Vector3 tempPos = new Vector3 (transform.position.x, transform.position.y, 0);
+			transform.position = tempPos;
+		}
+
+		transform.rotation = Quaternion.Euler (
+			0,
+			transform.rotation.eulerAngles.y,
+			transform.rotation.eulerAngles.z);
+
+//		if (transform.rotation.x != 0) {
+//			Vector3 tempRot = new Vector3 (0, transform.rotation.y, transform.rotation.z);
+//			transform.rotation = tempRot;
+//		}
+
+	}
+}

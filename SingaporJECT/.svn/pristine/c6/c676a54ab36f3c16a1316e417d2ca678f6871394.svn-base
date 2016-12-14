@@ -1,0 +1,28 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public class PlayePhysicsMoveScript : MonoBehaviour {
+
+	Rigidbody playerBody;
+
+	// Use this for initialization
+	void Start () {
+	
+		playerBody = GetComponent<Rigidbody> ();
+
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+
+
+
+	void MoveByKey (KeyCode key, Vector3 movement){
+		if (Input.GetKey (key)) {
+			playerBody.AddForce(movement); //we move in the direction we programmed it to move! Huzzah!
+		}
+	}
+
+}

@@ -1,0 +1,78 @@
+﻿using UnityEngine;
+using System.Collections;
+using System.IO; //we're using input output for this game. Awesome!
+
+public class InputOutputScript : MonoBehaviour {
+
+	//ALL OF THESE ARE CONSTANTS SO TYPOS ARE CAUGHT EASILY
+	private const char delim = '|'; //this is our delimiter. Unity will recognize it as a break between things.
+	private const string PATH = "Assets/"; //this is where we'll store our stories
+	private const string FILE_NAME = "firstStory.txt"; //this is the name of the file
+		//ideally, this would be initialized later on so players could create and name their own stories.
+		//For this exercise, I'm just making one story.
+
+	public string PLAYER_NAME = null; //this is the player's name.
+		//ideally, I use this. If not, I tried.
+
+	// Use this for initialization
+	void Start () {
+
+		//I'm using this to brute force create the document
+		StreamWriter sw = new StreamWriter (PATH + FILE_NAME, false);
+		for (int i = 0; i < 39; i++) {
+			//convert i into a stream. Research is awesome!
+			string s = i.ToString ();
+			sw.WriteLine (s + delim);
+		}
+		sw.Close();
+
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+
+	void WriteLine (string textInput){
+
+		//First, we need to a open a stream to the file.
+		//It is FALSE, so it will replace the file, rather than append to the end.
+		StreamWriter sw = new StreamWriter (PATH + FILE_NAME, false);
+
+		//Write a line to the file.
+		//We're using the delim to separate lines.
+		sw.WriteLine (textInput + delim);
+
+		//Then, we close our Stream Writer.
+		sw.Close();
+	}
+
+	//Load the select line of text from the story file
+	void ReadLine (int lineNumber){
+
+		//First, we need to open a stream to the file
+		//The inputs are the file's path and file's name. Constant names are awesome.
+		StreamReader sr = new StreamReader (PATH + FILE_NAME);
+
+		//we'll use this as a brute force way to read to a specific line
+
+		int lineCounter = 0;
+
+
+
+		//Read a line from the file
+		//		Debug.Log("Line from file: " + sr.ReadLine()); //this is concatenating two strings
+
+		//Split up a concatenated string
+		string input = sr.ReadLine ();
+		Debug.Log (input);
+		string[] splitInput = input.Split(new char[]{delim});
+		//single quotes means a character
+		//double quotes means a string
+		Debug.Log("Name: " + splitInput[0]); //this should just print out MAD
+
+		//Once we're done writing, we close our stream
+		sr.Close();
+
+	}
+}
