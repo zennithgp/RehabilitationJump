@@ -13,6 +13,7 @@ public class RingThisBell : MonoBehaviour {
 	void Start () {
 		player = GameObject.Find ("Player");
 		bellRing = GetComponent<AudioSource> ();
+		playerPhysicsMoveScript = player.GetComponent<PlayerPhysicsMoveScript> ();
 
 	}
 	
@@ -26,8 +27,12 @@ public class RingThisBell : MonoBehaviour {
 			bellRing.Play ();
 			touchedTheEnd = true;
 //			gameManagerScript.CheckHighScore ();
-//			Invoke ("Restart", 4f);
+			Invoke ("AdvanceLevel", 2f);
 		}
+	}
+
+	void AdvanceLevel(){
+		playerPhysicsMoveScript.ResetPlayerPosition (true);
 	}
 
 }

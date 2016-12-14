@@ -44,6 +44,8 @@ public class PlayerPhysicsMoveScript : MonoBehaviour {
 		if (Input.GetKey (reset)) {
 			ResetPlayerPosition (false);
 		}
+
+		CheatCodes ();
 	}
 
 
@@ -58,12 +60,22 @@ public class PlayerPhysicsMoveScript : MonoBehaviour {
 		}
 	}
 
-	public void ResetPlayerPosition(bool advanceLevel){
-		transform.position = startPos[currentLevel];
-		playerBody.velocity = startPos[currentLevel];
-		if (advanceLevel) {
-
+	void CheatCodes(){
+		if (Input.GetKey (KeyCode.M)) {
+			if (currentLevel < startPos.Length -1) {
+				currentLevel++;
+				Debug.Log ("The current level is " + currentLevel);
+			}
 		}
+	}
+
+	public void ResetPlayerPosition(bool advanceLevel){
+		if (advanceLevel && currentLevel < startPos.Length-1) {
+			currentLevel++;
+		}
+		transform.position = startPos[currentLevel];
+		playerBody.velocity = startPos[0];
+
 	}
 
 }
