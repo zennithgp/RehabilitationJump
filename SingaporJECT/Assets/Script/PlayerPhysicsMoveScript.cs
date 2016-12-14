@@ -15,7 +15,8 @@ public class PlayerPhysicsMoveScript : MonoBehaviour {
 	public KeyCode moveIn;
 	public KeyCode moveOut;
 	public KeyCode reset;
-	public Vector3 startPos;
+	public Vector3[] startPos;
+	int currentLevel = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -41,7 +42,7 @@ public class PlayerPhysicsMoveScript : MonoBehaviour {
 		MoveByKey (moveOut, new Vector3 (0, 0, -timeAdjustedSpeed));
 
 		if (Input.GetKey (reset)) {
-			ResetPlayerPosition ();
+			ResetPlayerPosition (false);
 		}
 	}
 
@@ -57,9 +58,12 @@ public class PlayerPhysicsMoveScript : MonoBehaviour {
 		}
 	}
 
-	void ResetPlayerPosition(){
-		transform.position = startPos;
-		playerBody.velocity = startPos;
+	public void ResetPlayerPosition(bool advanceLevel){
+		transform.position = startPos[currentLevel];
+		playerBody.velocity = startPos[currentLevel];
+		if (advanceLevel) {
+
+		}
 	}
 
 }
