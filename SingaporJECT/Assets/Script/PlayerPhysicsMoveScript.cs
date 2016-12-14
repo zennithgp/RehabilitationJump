@@ -24,6 +24,7 @@ public class PlayerPhysicsMoveScript : MonoBehaviour {
 	
 		playerBody = GetComponent<Rigidbody> ();
 		currentLevel = startLevel;
+		ResetPlayerPosition (false);
 
 	}
 	
@@ -64,9 +65,10 @@ public class PlayerPhysicsMoveScript : MonoBehaviour {
 
 	void CheatCodes(){
 		if (Input.GetKey (KeyCode.M)) {
+			Debug.Log ("The current level is " + currentLevel);
 			if (currentLevel < startPos.Length -1) {
 				currentLevel++;
-				Debug.Log ("The current level is " + currentLevel);
+				Debug.Log ("The NEW level is " + currentLevel);
 			}
 		}
 	}
