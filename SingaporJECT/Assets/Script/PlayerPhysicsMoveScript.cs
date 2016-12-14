@@ -17,11 +17,13 @@ public class PlayerPhysicsMoveScript : MonoBehaviour {
 	public KeyCode reset;
 	public Vector3[] startPos;
 	int currentLevel = 0;
+	public int startLevel = 0; //this is for me to cheat and test levels
 
 	// Use this for initialization
 	void Start () {
 	
 		playerBody = GetComponent<Rigidbody> ();
+		currentLevel = startLevel;
 
 	}
 	
@@ -75,6 +77,7 @@ public class PlayerPhysicsMoveScript : MonoBehaviour {
 		}
 		transform.position = startPos[currentLevel];
 		playerBody.velocity = startPos[0];
+		playerBody.rotation.Set (0, 0, 0, 0);
 
 	}
 
